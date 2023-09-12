@@ -1,0 +1,19 @@
+# Available colors 
+# BLACK
+# RED
+# GREEN
+# YELLOW
+# BLUE
+# MAGENTA
+# CYAN
+# WHITE
+
+color_background=BLACK
+color_foreground=WHITE
+color_extras=BLUE
+color_font_background=WHITE
+color_font_foregournd=BLACK
+color_font_error=RED
+
+logo=MAINFRAME
+logo_spacing=3
