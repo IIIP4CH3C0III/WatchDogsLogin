@@ -29,11 +29,11 @@ main( void ) {
 
 	initDisplay();
 	initColor( configuration );
-	
+
 	bool firstTime	= true;
 
 	char * username = initString() ;
-	char * password = initString() ; 
+	char * password = initString() ;
 
 	bool connection = false;
 	bool shutdown   = false;
@@ -43,74 +43,73 @@ main( void ) {
 	int columnsBefore = COLS , rowsBefore = LINES ;
 
 	int key = 0 ;
-	
+
 	while ( !connection && !shutdown && !reboot && !suspend ) {
 		if ( windowSizeChanges( &columnsBefore , &rowsBefore ) || firstTime ) {
 			for ( int i = 0 ; i < nWindows ; i++ ) {
 				details [ i ] = NULL ;
-			    details [ i ] = ( DETAILS * ) loadResources ( i );		
+			    details [ i ] = ( DETAILS * ) loadResources ( i );
 			}
 		   	for ( int i = 0 ; i < nWindows ; i++ ) {
 				windows [ i ] = NULL ;
-				windows [ i ] = (WINDOW *) createNewWindow( details[ i ] );     		
-		   	}	
+				windows [ i ] = (WINDOW *) createNewWindow( details[ i ] );
+		   	}
 			printLOGO( &windows[ BACKGROUND ] , details[ BACKGROUND ] , configuration->cfg_LogoText , configuration->cfg_LogoSpacing );
-			printInformation( windows , details );	
+			printInformation( windows , details );
 			firstTime = false;
 		}
 
 		positionCursor( &windows[ USER_BOX ] , 1 , 1 );
 		key = getch();
 		printBlank ( windows , details );
-        printVersion( &windows[ TOP_BAR ] , details[ TOP_BAR ] , VERSION );
-        printClock( &windows[ TOP_BAR ] , details[ TOP_BAR ] );
-				
+                printVersion( &windows[ TOP_BAR ] , details[ TOP_BAR ] , VERSION );
+                printClock( &windows[ TOP_BAR ] , details[ TOP_BAR ] );
+
 		switch ( key ) {
 			default:
 			case '\t':
 				username  = ( char * ) insertText ( &windows[ USER_BOX ]     , details[ USER_BOX ]->width - 2     , PLAIN_TEXT );					
 				refresh();
-    			password  = ( char * ) insertText ( &windows[ PASSWORD_BOX ] , details[ PASSWORD_BOX ]->width - 2 , PASSWORD   );
-    			
+    			        password  = ( char * ) insertText ( &windows[ PASSWORD_BOX ] , details[ PASSWORD_BOX ]->width - 2 , PASSWORD   );
 			case '\n' :
 				connection = login( username , password );
 				if ( connection )
 					break;
 
-                (void) printTXT ( &windows[ ERROR_MES ] , details[ ERROR_MES ]  , "W: username or password incorrect, try again", "", CENTER , 0 );				
-				break;		
+                                (void) printTXT ( &windows[ ERROR_MES ] , details[ ERROR_MES ]  , "W: username or password incorrect, try again", "", CENTER , 0 );				
+				break;
 
 			case KEY_F(2):
 			    if ( questionContinue( &windows[ BACKGROUND ] , details[ BACKGROUND ]  , SHUTDOWN ) ) {
-			    	shutdown = true; 
+			    	shutdown = true;
 			    }
 				break;
 
 			case KEY_F(3):
 			    if ( questionContinue( &windows[ BACKGROUND ] , details[ BACKGROUND ] , REBOOT ) ) {
-			    	reboot = true; 
+			    	reboot = true;
 			    }
 				break;
 
 			case KEY_F(4):
 			    if ( questionContinue( &windows[ BACKGROUND ] , details[ BACKGROUND ] , SUSPEND ) ) {
-			    	suspend = true; 
+			    	suspend = true;
 			    }
  				break;
 		}
-	}		
+	}
 	(void) exitDisplay ();
 
 	freeDetails( details );
 
 	if ( username != NULL ) {
 		free( username );
-		username = NULL ;	
+		username = NULL ;
 	}
 
 	if ( password != NULL ) {
 		free( password );
-		password = NULL ;	
+		password = NULL ;
 	}
 
 	if ( shutdown )
@@ -122,7 +121,7 @@ main( void ) {
 	if ( suspend )
 		execl( "/sbin/systemctl" , "suspend" , NULL );
 
-	if ( connection )		
+	if ( connection )
 		execl( "/bin/bash" , "/bin/bash" , NULL );
 
 	return 0;
